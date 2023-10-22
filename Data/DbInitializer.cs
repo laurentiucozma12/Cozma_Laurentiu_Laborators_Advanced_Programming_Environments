@@ -18,7 +18,7 @@ namespace Cozma_Laurentiu_Lab2.Data
                 var author2 = new Author { FirstName = "George", LastName = "Calinescu" };
                 var author3 = new Author { FirstName = "Mircea", LastName = "Eliade" };
 
-                context.Books.AddRange(
+                context.Books.AddRange( 
                     new Book { Title = "Baltagul", Author = author1, Price = Decimal.Parse("22") },
                     new Book { Title = "Enigma Otiliei", Author = author2, Price = Decimal.Parse("18") },
                     new Book { Title = "Maytrei", Author = author3, Price = Decimal.Parse("27") });

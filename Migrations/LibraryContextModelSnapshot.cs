@@ -145,7 +145,7 @@ namespace Cozma_Laurentiu_Lab2.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Cozma_Laurentiu_Lab2.Models.Book", b =>
+            modelBuilder.Entity("Cozma_Laurentiu_Lab2.Models.Book", b => 
                 {
                     b.Navigation("Orders");
                 });

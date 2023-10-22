@@ -15,7 +15,7 @@ namespace Cozma_Laurentiu_Lab2.Data
         public DbSet<Author> Authors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        { 
             modelBuilder.Entity<Customer>().ToTable("Customer");
             modelBuilder.Entity<Order>().ToTable("Order");
             modelBuilder.Entity<Book>().ToTable("Book");

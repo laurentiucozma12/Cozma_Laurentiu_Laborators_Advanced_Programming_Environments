@@ -77,7 +77,7 @@ namespace Cozma_Laurentiu_Lab2.Migrations
                         name: "FK_Order_Book_BookID",
                         column: x => x.BookID,
                         principalTable: "Book",
-                        principalColumn: "ID",
+                        principalColumn: "ID", 
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Order_Customer_CustomerID",
