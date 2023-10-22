@@ -12,7 +12,7 @@ builder.Services.AddDbContext<LibraryContext>(options => options.UseSqlServer(bu
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope()) 
 {
     var services = scope.ServiceProvider;
     DbInitializer.Initialize(services);
