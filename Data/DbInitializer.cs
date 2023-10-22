@@ -1,7 +1,6 @@
 ﻿using Cozma_Laurentiu_Lab2.Data;
 using Cozma_Laurentiu_Lab2.Models;
 using Microsoft.EntityFrameworkCore;
-using Cozma_Laurentiu_Lab2.Models;
 namespace Nume_Pren_Lab2.Data
 {
     public static class DbInitializer
@@ -12,7 +11,7 @@ namespace Nume_Pren_Lab2.Data
             {
                 if (context.Books.Any())
                 {
-                    return; // BD a fost creata anterior }
+                    return;
                     context.Books.AddRange(
                         new Book { Title = "Baltagul", Author = "Mihail Sadoveanu", Price = Decimal.Parse("22") }, 
                         new Book { Title = "Enigma Otiliei", Author = "George Calinescu", Price = Decimal.Parse("18") }, 
