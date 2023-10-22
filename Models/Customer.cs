@@ -13,6 +13,6 @@ namespace Cozma_Laurentiu_Lab2.Models
         public string Adress { get; set; }
         public DateTime BirthDate { get; set; }
 
-        public ICollection<Order> Orders { get;}
+        public ICollection<Order> Orders { get; set; }
     }
 }
