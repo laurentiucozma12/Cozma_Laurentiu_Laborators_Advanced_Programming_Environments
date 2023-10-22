@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Cozma_Laurentiu_Lab2.Data;
-using Nume_Pren_Lab2.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
