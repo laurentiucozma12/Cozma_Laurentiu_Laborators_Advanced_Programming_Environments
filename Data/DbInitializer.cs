@@ -10,7 +10,7 @@ namespace Nume_Pren_Lab2.Data
             using (var context = new LibraryContext(serviceProvider.GetRequiredService<DbContextOptions<LibraryContext>>()))
             {
                 if (context.Books.Any())
-                {
+                {   
                     return;
                     context.Books.AddRange(
                         new Book { Title = "Baltagul", Author = "Mihail Sadoveanu", Price = Decimal.Parse("22") }, 
