@@ -61,7 +61,17 @@ namespace Cozma_Laurentiu_Lab2.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(book);
+
+                // Create a new Order and associate it with the book
+                var order = new Order
+                {
+                    Book = book, // Associate the book with the order
+                    CustomerId = 1
+                };
+
+                _context.Add(order);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(book);
