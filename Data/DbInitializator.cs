@@ -10,10 +10,11 @@ namespace Cozma_Laurentiu_Lab2.Data
         {
             using (var context = new LibraryContext(serviceProvider.GetRequiredService<DbContextOptions<LibraryContext>>()))
             {
+
                 if (context.Books.Any())
                 {
                     return; // BD a fost creata anterior
-                }
+                }                
 
                 var books = new List<Book>
                 {
@@ -32,9 +33,9 @@ namespace Cozma_Laurentiu_Lab2.Data
 
                 var orders = new List<Order>
                 {
-                    new Order { Customer = customers[0], Book = books[0] },
-                    new Order { Customer = customers[0], Book = books[1] },
-                    new Order { Customer = customers[1], Book = books[2] }
+                    new Order { CustomerId = customers[0].Id, BookId = books[0].Id },
+                    new Order { CustomerId = customers[0].Id, BookId = books[1].Id },
+                    new Order { CustomerId = customers[1].Id, BookId = books[2].Id }
                 };
                 context.Orders.AddRange(orders);
 
