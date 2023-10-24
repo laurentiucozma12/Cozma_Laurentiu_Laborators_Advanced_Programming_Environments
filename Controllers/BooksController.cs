@@ -124,13 +124,27 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         }
 
         // POST: Books/Edit/5
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,AuthorId,Price")] Book book)
+        public async Task<IActionResult> Edit(int? id, [Bind("Id,Title,AuthorId,Price")] Book book)
         {
             if (id != book.Id)
             {
                 return NotFound();
+            }
+
+            var bookToUpdate = await _context.Books.FirstOrDefaultAsync(s => s.Id == id);
+            if (await TryUpdateModelAsync<Book>(bookToUpdate, "", s => s.Author, s => s.Title, s => s.Price))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists");
+                }
             }
 
             if (ModelState.IsValid)
