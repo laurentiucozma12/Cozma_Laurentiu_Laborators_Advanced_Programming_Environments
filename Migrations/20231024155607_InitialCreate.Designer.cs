@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cozma_Laurentiu_Lab2.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20231023163915_InitialCreate")]
+    [Migration("20231024155607_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -54,7 +54,7 @@ namespace Cozma_Laurentiu_Lab2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
@@ -109,6 +109,9 @@ namespace Cozma_Laurentiu_Lab2.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
@@ -122,9 +125,7 @@ namespace Cozma_Laurentiu_Lab2.Migrations
                 {
                     b.HasOne("Cozma_Laurentiu_Lab2.Models.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AuthorId");
 
                     b.Navigation("Author");
                 });

@@ -30,13 +30,15 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Books == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var book = await _context.Books
                 .Include(b => b.Author)
+                .Include(s => s.Orders)
+                .ThenInclude(e => e.Customer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (book == null)
             {
@@ -65,25 +67,32 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,AuthorId,Price")] Book book)
+        public async Task<IActionResult> Create([Bind("Title,AuthorId,Price")] Book book)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(book);
+                if (ModelState.IsValid)
+                {
+                    _context.Add(book);
 
-                await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Retrieve the author list as before
+                var authorList = _context.Authors.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.FirstName + " " + x.LastName
+                }).ToList();
+
+                ViewBag.AuthorId = new SelectList(authorList, "Value", "Text");
             }
-
-            // Retrieve the author list as before
-            var authorList = _context.Authors.Select(x => new SelectListItem
+            catch (DbUpdateException /* ex*/)
             {
-                Value = x.Id.ToString(),
-                Text = x.FirstName + " " + x.LastName
-            }).ToList();
-
-            ViewBag.AuthorId = new SelectList(authorList, "Value", "Text");
+                ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists ");
+            }
 
             return View(book);
         }
