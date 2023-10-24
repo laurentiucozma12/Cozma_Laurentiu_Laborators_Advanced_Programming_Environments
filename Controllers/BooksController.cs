@@ -181,7 +181,7 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         }
 
         // GET: Books/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
@@ -189,12 +189,17 @@ namespace Cozma_Laurentiu_Lab2.Controllers
             }
 
             var book = await _context.Books
+                .AsNoTracking()
                 .Include(b => b.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (book == null)
             {
                 return NotFound();
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] = "Delete failed. Try again";
             }
 
             return View(book);
@@ -209,13 +214,20 @@ namespace Cozma_Laurentiu_Lab2.Controllers
 
             if (book == null)
             {
-                return NotFound();
+                //return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
         }
 
         private bool BookExists(int id)
