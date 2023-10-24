@@ -14,13 +14,20 @@ namespace Cozma_Laurentiu_Lab2.Data
                 if (context.Books.Any())
                 {
                     return; // BD a fost creata anterior
-                }                
+                }
+
+                var authors = new List<Author>
+                {
+                    new Author { FirstName = "Mihail", LastName = "Sadoveanu" },
+                    new Author { FirstName = "George", LastName = "Calinescu" },
+                    new Author { FirstName = "Mircea", LastName = "Eliade" }
+                };
 
                 var books = new List<Book>
                 {
-                    new Book { Title = "Baltagul", Author = "Mihail Sadoveanu", Price = Decimal.Parse("22") },
-                    new Book { Title = "Enigma Otiliei", Author = "George Calinescu", Price = Decimal.Parse("18") },
-                    new Book { Title = "Maytrei", Author = "Mircea Eliade", Price = Decimal.Parse("27") }
+                    new Book { Title = "Baltagul", Author = authors[0], Price = Decimal.Parse("22") },
+                    new Book { Title = "Enigma Otiliei", Author = authors[1], Price = Decimal.Parse("18") },
+                    new Book { Title = "Maytrei", Author = authors[2], Price = Decimal.Parse("27") }
                 };
                 context.Books.AddRange(books);
 
@@ -31,14 +38,14 @@ namespace Cozma_Laurentiu_Lab2.Data
                 };
                 context.Customers.AddRange(customers);
 
-                var orders = new List<Order>
+             /*   var orders = new List<Order>
                 {
                     new Order { CustomerId = customers[0].Id, BookId = books[0].Id },
                     new Order { CustomerId = customers[0].Id, BookId = books[1].Id },
                     new Order { CustomerId = customers[1].Id, BookId = books[2].Id }
                 };
                 context.Orders.AddRange(orders);
-
+             */
 
                 context.SaveChanges();
             }

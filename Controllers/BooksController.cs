@@ -23,7 +23,7 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         public async Task<IActionResult> Index()
         {
             return _context.Books != null ?
-                View(await _context.Books.ToListAsync()) :
+                View(await _context.Books.Include (i=>i.Author).ToListAsync()) :
                 Problem("Entity set 'LibraryContext.Books'  is null.");
         }
 
@@ -36,6 +36,7 @@ namespace Cozma_Laurentiu_Lab2.Controllers
             }
 
             var book = await _context.Books
+                .Include(b => b.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (book == null)
             {
@@ -48,6 +49,14 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
+            var authorList = _context.Authors.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.FirstName + " " + x.LastName
+            }).ToList();
+
+            ViewBag.AuthorId = new SelectList(authorList, "Value", "Text");
+
             return View();
         }
 
@@ -56,31 +65,33 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Author,Price")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,Title,AuthorId,Price")] Book book)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(book);
 
-                // Create a new Order and associate it with the book
-                var order = new Order
-                {
-                    Book = book, // Associate the book with the order
-                    CustomerId = 1
-                };
-
-                _context.Add(order);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
+
+            // Retrieve the author list as before
+            var authorList = _context.Authors.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.FirstName + " " + x.LastName
+            }).ToList();
+
+            ViewBag.AuthorId = new SelectList(authorList, "Value", "Text");
+
             return View(book);
         }
 
         // GET: Books/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Books == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -90,15 +101,23 @@ namespace Cozma_Laurentiu_Lab2.Controllers
             {
                 return NotFound();
             }
+
+            // Retrieve the author list as before
+            var authorList = _context.Authors.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.FirstName + " " + x.LastName
+            }).ToList();
+
+            ViewBag.AuthorId = new SelectList(authorList, "Value", "Text", book.AuthorId);
+
             return View(book);
         }
 
         // POST: Books/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Price")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,AuthorId,Price")] Book book)
         {
             if (id != book.Id)
             {
@@ -125,19 +144,31 @@ namespace Cozma_Laurentiu_Lab2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            // Retrieve the author list as before
+            var authorList = _context.Authors.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.FirstName + " " + x.LastName
+            }).ToList();
+
+            ViewBag.AuthorId = new SelectList(authorList, "Value", "Text", book.AuthorId);
+
             return View(book);
         }
 
         // GET: Books/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Books == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var book = await _context.Books
+                .Include(b => b.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (book == null)
             {
                 return NotFound();
@@ -151,17 +182,16 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Books == null)
-            {
-                return Problem("Entity set 'LibraryContext.Books'  is null.");
-            }
             var book = await _context.Books.FindAsync(id);
-            if (book != null)
+
+            if (book == null)
             {
-                _context.Books.Remove(book);
+                return NotFound();
             }
 
+            _context.Books.Remove(book);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -22,6 +22,27 @@ namespace Cozma_Laurentiu_Lab2.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Cozma_Laurentiu_Lab2.Models.Author", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Author", (string)null);
+                });
+
             modelBuilder.Entity("Cozma_Laurentiu_Lab2.Models.Book", b =>
                 {
                     b.Property<int>("Id")
@@ -30,9 +51,8 @@ namespace Cozma_Laurentiu_Lab2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -42,6 +62,8 @@ namespace Cozma_Laurentiu_Lab2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Book", (string)null);
                 });
@@ -93,6 +115,17 @@ namespace Cozma_Laurentiu_Lab2.Migrations
                     b.ToTable("Order", (string)null);
                 });
 
+            modelBuilder.Entity("Cozma_Laurentiu_Lab2.Models.Book", b =>
+                {
+                    b.HasOne("Cozma_Laurentiu_Lab2.Models.Author", "Author")
+                        .WithMany("Books")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
             modelBuilder.Entity("Cozma_Laurentiu_Lab2.Models.Order", b =>
                 {
                     b.HasOne("Cozma_Laurentiu_Lab2.Models.Book", "Book")
@@ -110,6 +143,11 @@ namespace Cozma_Laurentiu_Lab2.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("Cozma_Laurentiu_Lab2.Models.Author", b =>
+                {
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("Cozma_Laurentiu_Lab2.Models.Book", b =>
