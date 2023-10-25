@@ -20,11 +20,38 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            return _context.Books != null ?
-                View(await _context.Books.Include (i=>i.Author).ToListAsync()) :
-                Problem("Entity set 'LibraryContext.Books'  is null.");
+            ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["CurrentFilter"] = searchString;
+            var books = from b in _context.Books select b;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.Title.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "title_desc":
+                    books = books.OrderByDescending(b => b.Title);
+                    break;
+                case "Price":
+                    books = books.OrderBy(b => b.Price);
+                    break;
+                case "price_desc":
+                    books = books.OrderByDescending(b => b.Price);
+                    break;
+                default:
+                    books = books.OrderBy(b => b.Title);
+                    break;
+            }
+
+            return View(await books
+                .AsNoTracking()
+                .Include(i => i.Author)
+                .ToListAsync());
         }
 
         // GET: Books/Details/5
@@ -214,7 +241,6 @@ namespace Cozma_Laurentiu_Lab2.Controllers
 
             if (book == null)
             {
-                //return NotFound();
                 return RedirectToAction(nameof(Index));
             }
 
