@@ -116,7 +116,7 @@ namespace Cozma_Laurentiu_Lab2.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _context.Add(book);
+                    _context.Add(book); 
 
                     await _context.SaveChangesAsync();
 
