@@ -20,12 +20,30 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber
+        )
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
             ViewData["CurrentFilter"] = searchString;
-            var books = from b in _context.Books select b;
+            var books = _context.Books
+               .Include(b => b.Author)
+               .Select(b => b);
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -47,11 +65,9 @@ namespace Cozma_Laurentiu_Lab2.Controllers
                     books = books.OrderBy(b => b.Title);
                     break;
             }
+            int pageSize = 2;   
 
-            return View(await books
-                .AsNoTracking()
-                .Include(i => i.Author)
-                .ToListAsync());
+            return View(await PaginatedList<Book>.CreateAsync(books.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Books/Details/5
