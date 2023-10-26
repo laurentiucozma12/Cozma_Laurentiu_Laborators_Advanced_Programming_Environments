@@ -85,3 +85,29 @@
         }
     </table>
 }
+@if (Model.Orders != null)
+{
+    <h3>Orders of the Selected Book</h3>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Date</th>
+        </tr>
+        @foreach (var item in Model.Orders)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderDate)
+                </td>
+            </tr>
+        }
+    </table>
+}
