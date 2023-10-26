@@ -27,9 +27,12 @@ namespace Cozma_Laurentiu_Lab2.Controllers
             var viewModel = new PublisherIndexData();
             viewModel.Publishers = await _context.Publishers
                 .Include(p => p.PublishedBooks)
+                    .ThenInclude(pb => pb.Book).ThenInclude(b => b.Author)
+                .Include(p => p.PublishedBooks)
                     .ThenInclude(pb => pb.Book)
-                        .ThenInclude(i => i.Orders)
-                            .ThenInclude(i => i.Customer)
+                    .ThenInclude(i => i.Orders)
+                    .ThenInclude(i => i.Customer)
+                                
                 .AsNoTracking()
                 .OrderBy(p => p.PublisherName)
                 .ToListAsync();

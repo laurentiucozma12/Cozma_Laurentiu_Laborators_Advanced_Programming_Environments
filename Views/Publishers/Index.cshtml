@@ -12,7 +12,7 @@
         <tr>
             <th>Publisher Name</th>
             <th>Address</th>
-            <th>Books</th>
+            @* <th>Books</th> *@
             <th></th>
         </tr>
     </thead>
@@ -33,14 +33,14 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Address)
                 </td>
-                <td>
+                @* <td>
                     @{
                         foreach (var book in item.PublishedBooks)
                         {
                             @book.Book.Id @: @book.Book.Title <br />
                         }
                     }
-                </td>
+                </td> *@
                 <td>
                     <a asp-action="Index" asp-route-id="@item.Id">Select</a> |
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -76,7 +76,7 @@
                     @item.Title
                 </td>
                 <td>
-                    @item.Author
+                    @item.Author.FirstName @Html.Raw(" ") @item.Author.LastName
                 </td>
                 <td>
                     @item.Price
