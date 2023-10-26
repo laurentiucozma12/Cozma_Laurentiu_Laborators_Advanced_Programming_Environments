@@ -23,8 +23,8 @@ namespace Cozma_Laurentiu_Lab2.Controllers
         public async Task<IActionResult> Index()
         {
             return _context.Authors != null ?
-                        View(await _context.Authors.ToListAsync()) :
-                        Problem("Entity set 'LibraryContext.Authors'  is null.");
+                View(await _context.Authors.ToListAsync()) :
+                Problem("Entity set 'LibraryContext.Authors'  is null.");
         }
 
         // GET: Authors/Details/5
